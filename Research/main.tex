@@ -12,7 +12,7 @@
 \geometry{margin=1in}
 
 \title{Cassandra-Ransomware: A Responsible, Non-Actionable Study for Defensive Research}
-\author{Anonymous Researcher}
+\author{Nattapong Tapachoom}
 \date{\today}
 
 \begin{document}
@@ -58,7 +58,7 @@ Common adversary goals include financial gain through extortion, data destructio
 Adversaries range from low-skill opportunists to well-resourced groups with sophisticated tooling and infrastructure. Understanding capability levels informs detection and mitigation choices.
 
 \subsection{Attack Surface}
-Relevant attack surfaces include exposed remote services, phishing vectors, third-party software updates, and weak credential management practices.
+Relevant attack surfaces include exposed remote services, phishing vectors, third-party software updates, weak credential management practices, and network share vulnerabilities. Advanced threats may also exploit Tor infrastructure for C2 communication and employ polymorphic techniques to evade detection.
 
 \section{High-Level Design}
 \label{sec:design}
@@ -68,12 +68,15 @@ This section describes the system at a conceptual level to support analysis but 
 \subsection{Modular Overview}
 The project is organized into modular components for clarity in analysis:
 \begin{itemize}
-  \item \textbf{Orchestration:} Coordinates high-level workflow and configuration.
-  \item \textbf{Cryptography (Conceptual):} Uses authenticated encryption primitives to protect confidentiality and integrity of target data.
-  \item \textbf{Traversal (Conceptual):} Identifies candidate files and directories based on configurable inclusion/exclusion rules.
-  \item \textbf{Persistence (Defensive Discussion):} Examines common persistence patterns used by threats and how to detect/remediate them.
-  \item \textbf{Notification/Notes:} Generates human-readable notes to simulate extortion messages; in research, these are used to exercise detection logic.
-  \item \textbf{Cleanup/Wiping (Defensive Discussion):} Discusses effects of destructive actions and techniques for recovery and forensics.
+  \item \textbf{Orchestration:} Coordinates high-level workflow and configuration with polymorphic execution ordering.
+  \item \textbf{Cryptography (Conceptual):} Uses authenticated encryption primitives with hardware-bound keys to protect confidentiality and integrity of target data, including streaming encryption for large files.
+  \item \textbf{Traversal (Conceptual):} Identifies candidate files and directories based on configurable inclusion/exclusion rules, extending to network shares and mounted drives.
+  \item \textbf{Persistence (Defensive Discussion):} Examines common persistence patterns used by threats and how to detect/remediate them, including multi-point persistence mechanisms.
+  \item \textbf{Notification/Notes:} Generates human-readable notes with countdown timers to simulate extortion messages; in research, these are used to exercise detection logic.
+  \item \textbf{C2 Communication:} Implements anonymous command-and-control through Tor networks with comprehensive victim intelligence gathering.
+  \item \textbf{Anti-Forensics:} Includes secure deletion, free space wiping, and self-destruction mechanisms.
+  \item \textbf{Polymorphic Engine:} Compile-time randomization to generate unique signatures and evade signature-based detection.
+  \item \textbf{Wiper Mode:} Deadline-enforced destructive operations with military-grade secure deletion.
 \end{itemize}
 
 \section{Cryptography: Concepts and Considerations}
@@ -81,9 +84,12 @@ The project is organized into modular components for clarity in analysis:
 
 This section explains relevant cryptographic concepts used in defensive research, focusing on properties and trade-offs rather than providing implementable code.
 \begin{itemize}
-  \item \textbf{Authenticated Encryption:} Provides confidentiality and integrity in a single primitive; prevents undetectable tampering.
-  \item \textbf{Key Management:} The security of any cryptographic scheme hinges on key secrecy and secure key lifecycle management.
+  \item \textbf{Authenticated Encryption:} Provides confidentiality and integrity in a single primitive; prevents undetectable tampering. Advanced implementations use chunked AEAD for large file handling.
+  \item \textbf{Hardware-Bound Keys:} Cryptographic keys tied to specific hardware identifiers, enabling machine-specific decryption and preventing key reuse across devices.
+  \item \textbf{Key Management:} The security of any cryptographic scheme hinges on key secrecy and secure key lifecycle management, with additional considerations for polymorphic key generation.
+  \item \textbf{Streaming Encryption:} Processes large files in chunks to avoid memory exhaustion, maintaining cryptographic security properties.
   \item \textbf{Deterministic vs. Non-Deterministic Encryption:} Non-deterministic schemes introduce randomness (nonces, IVs) to prevent identical plaintexts producing identical ciphertexts.
+  \item \textbf{Polymorphic Cryptography:} Compile-time key randomization to generate unique cryptographic signatures per build.
 \end{itemize}
 
 \section{Implementation Overview (Non-Actionable)}
@@ -121,12 +127,15 @@ Describe the isolated environment: VM snapshots, network isolation, and controll
 
 This section summarizes practical, actionable defensive guidance (not offensive techniques):
 \begin{itemize}[leftmargin=*]
-  \item \textbf{Robust Backups:} Maintain immutable, offline, and tested backups with well-documented restore procedures.
-  \item \textbf{Least Privilege:} Limit user and service permissions to reduce blast radius.
-  \item \textbf{Endpoint Detection:} Use behavior-based detection that looks for mass file modifications, unexpected encryption patterns, and suspicious persistence changes.
-  \item \textbf{Network Segmentation:} Restrict lateral movement by segmenting critical infrastructure.
-  \item \textbf{Incident Response Preparedness:} Maintain and test runbooks, communication plans, and legal/forensic contacts.
-  \item \textbf{Patch Management and Hardening:} Keep software updated and minimize exposed services.
+  \item \textbf{Robust Backups:} Maintain immutable, offline, and tested backups with well-documented restore procedures. Consider hardware-bound encryption for additional protection.
+  \item \textbf{Least Privilege:} Limit user and service permissions to reduce blast radius and prevent unauthorized access to network shares.
+  \item \textbf{Endpoint Detection:} Use behavior-based detection that looks for mass file modifications, unexpected encryption patterns, suspicious persistence changes, and anomalous network connections to Tor nodes.
+  \item \textbf{Network Segmentation:} Restrict lateral movement by segmenting critical infrastructure and monitoring for unauthorized access to network shares.
+  \item \textbf{Incident Response Preparedness:} Maintain and test runbooks, communication plans, and legal/forensic contacts. Include procedures for handling polymorphic malware variants.
+  \item \textbf{Patch Management and Hardening:} Keep software updated and minimize exposed services. Monitor for unusual system resource usage that may indicate secure deletion operations.
+  \item \textbf{Anomaly Detection:} Implement monitoring for unusual file access patterns, hardware fingerprinting attempts, and polymorphic code execution behaviors.
+  \item \textbf{Tor Traffic Monitoring:} Detect and block unauthorized Tor connections that may indicate C2 communication.
+  \item \textbf{Forensic Readiness:} Prepare for anti-forensic techniques by implementing comprehensive logging and maintaining known-good system baselines.
 \end{itemize}
 
 \section{Forensics and Recovery}
@@ -142,7 +151,7 @@ If research uncovers new vulnerabilities, coordinate disclosure with affected ve
 \section{Conclusion}
 \label{sec:conclusion}
 
-This report provides a thorough, non-actionable analysis intended to support defensive research, threat modeling, and security engineering. The emphasis is on mitigating risk and improving detection and recovery capabilities rather than enabling malicious activity.
+This report provides a thorough, non-actionable analysis of advanced ransomware techniques intended to support defensive research, threat modeling, and security engineering. The study covers sophisticated features including polymorphic engines, hardware-bound encryption, Tor-based C2 communication, and anti-forensic mechanisms. The emphasis is on mitigating risk and improving detection and recovery capabilities rather than enabling malicious activity, with particular attention to enterprise-scale threats and multi-device extortion scenarios.
 
 \appendix
 \section{Appendix: Safe Test Checklists}
