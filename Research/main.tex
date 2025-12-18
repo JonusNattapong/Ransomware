@@ -37,7 +37,7 @@ This report focuses on conceptual design and defensive analysis. It deliberately
 \section{Background and Related Work}
 \label{sec:background}
 
-Ransomware has evolved from simple locker programs to sophisticated, multi-stage attacks. Key publications and incident reports are summarized, emphasizing detection research, backup strategies, and incident response best practices. Representative works include academic analyses, vendor threat reports, and public post-incident write-ups.
+Ransomware has evolved from simple locker programs to sophisticated, multi-stage attacks. Modern variants include bootkit infections that target the Master Boot Record (MBR), rendering systems completely unbootable until ransom payment. These MBR lockers display ransom demands immediately upon device startup, before the operating system loads, preventing access to recovery tools and creating severe disruption. Key publications and incident reports are summarized, emphasizing detection research, backup strategies, and incident response best practices. Representative works include academic analyses, vendor threat reports, and public post-incident write-ups.
 
 \section{Responsible Research and Ethics}
 \label{sec:ethics}
@@ -55,7 +55,7 @@ Experiments should be run on isolated virtual machines or purpose-built testbeds
 Common adversary goals include financial gain through extortion, data destruction for sabotage, and data exfiltration to enable double extortion.
 
 \subsection{Capabilities and Constraints}
-Adversaries range from low-skill opportunists to well-resourced groups with sophisticated tooling and infrastructure. Understanding capability levels informs detection and mitigation choices.
+Adversaries range from low-skill opportunists to well-resourced groups with sophisticated tooling and infrastructure. Advanced actors may deploy bootkit infections targeting the Master Boot Record (MBR) to create unbootable systems that display ransom screens before OS loading. Understanding capability levels informs detection and mitigation choices.
 
 \subsection{Attack Surface}
 Relevant attack surfaces include exposed remote services, phishing vectors, third-party software updates, weak credential management practices, and network share vulnerabilities. Advanced threats may also exploit Tor infrastructure for C2 communication and employ polymorphic techniques to evade detection.

