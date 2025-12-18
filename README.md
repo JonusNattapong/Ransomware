@@ -4,6 +4,90 @@
 
 This repository contains a comprehensive Rust-based implementation of advanced ransomware for educational and research purposes only. It demonstrates cutting-edge concepts in cryptography, anti-forensic techniques, polymorphic code generation, and command-and-control (C2) communication. **Warning: This code is for learning purposes and should not be used for malicious activities. Always ensure compliance with legal and ethical standards.**
 
+## 🚀 Quick Start (ใช้งานง่ายๆ)
+
+### สำหรับผู้เริ่มต้น - ใช้ Launcher Script
+
+#### Windows:
+```cmd
+# ดับเบิลคลิกที่ run.bat หรือรันใน Command Prompt
+run.bat
+```
+
+#### Linux/Mac:
+```bash
+# ทำให้ไฟล์ executable ก่อน
+chmod +x run.sh
+./run.sh
+```
+
+Launcher จะแสดงเมนูให้เลือก:
+1. **Safe Demo Mode** - ทดสอบปลอดภัย (แนะนำ)
+2. **Show Help** - แสดงวิธีใช้
+3. **Developer Test** - โหมดทดสอบสำหรับนักพัฒนา
+4. **Integration Test** - ทดสอบการทำงานร่วมกัน
+5. **Full Execution** - ⚠️ อันตราย! (ใช้ใน VM เท่านั้น)
+
+### สำหรับนักพัฒนา - ใช้ Command Line
+
+```bash
+# Demo ปลอดภัย (แนะนำสำหรับลองใช้)
+cargo run -- --demo
+
+# แสดงวิธีใช้
+cargo run -- --help
+
+# ทดสอบ dropper chain
+cargo run -- test
+
+# ทดสอบการทำงานร่วมกัน
+cargo run -- integration
+
+# ⚠️ FULL EXECUTION (อันตราย!)
+## 📖 วิธีใช้งาน (How to Use)
+
+### 🎭 Demo Mode (ปลอดภัย 100%)
+```bash
+cargo run -- --demo
+```
+**ผลลัพธ์:**
+```
+🎭 Starting Cassandra Ransomware Demo Mode
+==========================================
+
+1️⃣ 🔧 ROOTKIT CAPABILITIES:
+   • SSDT hooking for system call interception
+   • DKOM (Direct Kernel Object Manipulation)
+   • Dual-mode process/file hiding
+
+2️⃣ 🌐 STEALTH COMMUNICATION:
+   • DNS tunneling: Data hidden in DNS queries
+   • ICMP exfiltration: Data in ping packets
+   • Domain fronting: CDN bypass techniques
+
+... (แสดงทุก features โดยไม่ทำอันตรายจริง)
+```
+
+### 🧪 Test Modes (สำหรับนักพัฒนา)
+
+#### Dropper Chain Test:
+```bash
+cargo run -- test
+```
+**แสดง:** การทำงานของ multi-stage dropper
+
+#### Integration Test:
+```bash
+cargo run -- integration
+```
+**แสดง:** การทำงานร่วมกันของทุก components
+
+### ⚠️ Full Execution (อันตราย!)
+```bash
+cargo run
+```
+**⚠️ WARNING:** จะ encrypt ไฟล์จริง! ใช้ใน VM เท่านั้น
+
 ## Goals
 
 - Demonstrate advanced encryption techniques using modern cryptographic libraries.

