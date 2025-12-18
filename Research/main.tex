@@ -70,7 +70,7 @@ The project is organized into modular components for clarity in analysis:
 \begin{itemize}
   \item \textbf{Orchestration:} Coordinates high-level workflow and configuration with polymorphic execution ordering.
   \item \textbf{Cryptography (Conceptual):} Uses authenticated encryption primitives with hardware-bound keys to protect confidentiality and integrity of target data, including streaming encryption for large files.
-  \item \textbf{Traversal (Conceptual):} Identifies candidate files and directories based on configurable inclusion/exclusion rules, extending to network shares and mounted drives.
+  \item \textbf{Traversal (Conceptual):} Identifies candidate files and directories based on configurable inclusion/exclusion rules, extending to network shares and mounted drives. Includes AI-powered analysis using machine learning to prioritize high-value files based on size, access patterns, file types, and directory importance.
   \item \textbf{Persistence (Defensive Discussion):} Examines common persistence patterns used by threats and how to detect/remediate them, including multi-point persistence mechanisms.
   \item \textbf{Notification/Notes:} Generates human-readable notes with countdown timers to simulate extortion messages; in research, these are used to exercise detection logic.
   \item \textbf{C2 Communication:} Implements anonymous command-and-control through Tor networks with comprehensive victim intelligence gathering.

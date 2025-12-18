@@ -12,6 +12,7 @@ This repository contains a comprehensive Rust-based implementation of advanced r
 - Implement polymorphic engines for AV evasion.
 - Study C2 communication through Tor networks.
 - Research anti-forensic techniques and secure deletion.
+- Investigate AI/ML applications in malware targeting and evasion.
 - Provide a basis for security research and defensive programming.
 
 ## Features
@@ -22,6 +23,7 @@ This repository contains a comprehensive Rust-based implementation of advanced r
 - **Machine-Specific Decryption**: Files can only be decrypted on the original infected machine
 
 ### Advanced Capabilities
+- **AI-Powered Targeting**: Uses machine learning (linfa crate) to analyze file characteristics and prioritize encryption of high-value files (large, recently accessed, important types in key directories)
 - **Network Share Encryption**: Automatically detects and encrypts mounted network drives
 - **Polymorphic Engine**: Compile-time randomization with unique signatures per build
 - **Tor C2 Communication**: Anonymous command-and-control via SOCKS5 proxy
