@@ -13,6 +13,7 @@ This repository contains a comprehensive Rust-based implementation of advanced r
 - Study C2 communication through Tor networks.
 - Research anti-forensic techniques and secure deletion.
 - Investigate AI/ML applications in malware targeting and evasion.
+- Examine kernel-level rootkit techniques for stealth and evasion.
 - Provide a basis for security research and defensive programming.
 
 ## Features
@@ -24,6 +25,7 @@ This repository contains a comprehensive Rust-based implementation of advanced r
 
 ### Advanced Capabilities
 - **AI-Powered Targeting**: Uses machine learning (linfa crate) to analyze file characteristics and prioritize encryption of high-value files (large, recently accessed, important types in key directories)
+- **Stealth Rootkit Mode**: Kernel-level injection via Windows drivers or Linux modules to hide processes, files, and network activity from antivirus and system monitoring
 - **Network Share Encryption**: Automatically detects and encrypts mounted network drives
 - **Polymorphic Engine**: Compile-time randomization with unique signatures per build
 - **Tor C2 Communication**: Anonymous command-and-control via SOCKS5 proxy

