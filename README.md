@@ -187,9 +187,11 @@ cargo run
 cassandra-ransomeware/
 ├── src/
 │   ├── main.rs           # Main entry point with CLI/web modes
+│   ├── config.rs         # Configuration management
 │   ├── crypto.rs         # Encryption/decryption functions
 │   ├── traversal.rs      # AI-powered file discovery
 │   ├── ransom_note.rs    # Ransom note generation
+│   ├── data_thief.rs     # Data theft and blackmail features
 │   ├── persistence.rs    # System persistence mechanisms
 │   ├── wiper.rs          # Deadline enforcement & file destruction
 │   ├── bootkit.rs        # Bootkit persistence
@@ -242,6 +244,21 @@ tor_proxy_enabled = true
 enabled = false
 port = 8000
 host = "127.0.0.1"
+```
+
+### Data Theft & Blackmail
+```toml
+[data_theft]
+enabled = true
+collect_system_info = true
+collect_user_files = true
+collect_browser_data = true
+collect_credentials = true
+capture_screenshots = true
+max_files_to_collect = 100
+max_file_preview_size = 1024
+exfiltrate_to_c2 = false  # Disabled for safety
+generate_blackmail_note = true
 ```
 
 ## 🔧 Build & Development
@@ -344,6 +361,13 @@ cargo run --features web -- --web
 - **DNS over HTTPS**: Covert exfiltration using legitimate DNS queries over encrypted HTTPS connections
 - **Steganography**: Data hiding in social media images and posts for ultimate backup communication
 - **Secure Multi-Pass Wipe**: 3-pass random overwrite + secure deletion for all executable stages
+
+### Data Theft & Blackmail Features
+- **Comprehensive Data Collection**: System information, user files, browser data, stored credentials, and screenshots
+- **Intelligent Threat Assessment**: AI-powered analysis to determine blackmail potential and threat level
+- **Dynamic Blackmail Notes**: Personalized ransom demands based on collected data and assessed threat level
+- **Safe Demo Mode**: Shows data collection capabilities without actually stealing any real data
+- **Configurable Collection**: Fine-grained control over what data types to collect via config.toml
 
 ### Anti-Forensic Features
 - **Secure File Deletion**: 4-pass overwrite (zeros, random, zeros, ones) before deletion

