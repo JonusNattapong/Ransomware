@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 cassandra-ransomeware Ransomware - Web Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            color: #e74c3c;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .warning h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .warning p {
+            color: #856404;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .card button {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .card button:hover {
+            background: linear-gradient(45deg, #2980b9, #21618c);
+            transform: scale(1.05);
+        }
+
+        .card button.danger {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        .card button.danger:hover {
+            background: linear-gradient(45deg, #c0392b, #a93226);
+        }
+
+        .result {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #28a745;
+        }
+
+        .result.error {
+            border-left-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .result pre {
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .feature-list li:before {
+            content: "✅";
+            margin-right: 10px;
+            color: #28a745;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .status.pass {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 cassandra-ransomeware Ransomware</h1>
+            <p>Advanced Educational Implementation - Web Interface</p>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ EXTREME WARNING</h3>
+            <p>This is for <strong>educational purposes only</strong>. Never run dangerous operations on production systems!</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>🛡️ Safe Demo Mode</h3>
+                <p>Show all ransomware capabilities without any risk. Perfect for learning!</p>
+                <button onclick="runDemo()">Run Safe Demo</button>
+                <button onclick="getDemoResults()">Get Demo Results</button>
+                <div id="demo-result" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="card">
+                <h3>🔧 Component Testing</h3>
+                <p>Test individual components and integration between modules.</p>
+                <button onclick="runIntegrationTest()">Run Integration Test</button>
+                <button onclick="getTestResults()">Get Test Results</button>
+                <div id="test-result" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="card">
+                <h3>📊 System Status</h3>
+                <p>Check current system information and component status.</p>
+                <button onclick="getSystemStatus()">Check Status</button>
+                <div id="status-result" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="card">
+                <h3>🚨 DANGER ZONE</h3>
+                <p><strong>DO NOT USE!</strong> This would actually encrypt files.</p>
+                <button class="danger" onclick="alert('This is disabled for safety!')" disabled>Full Execution (DISABLED)</button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing... Please wait...</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>🔒 Educational Research Tool - Use Responsibly</p>
+    </div>
+
+    <script>
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            const loading = document.getElementById('loading');
+            loading.style.display = 'block';
+
+            try {
+                const options = {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                };
+
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+
+                const response = await fetch(endpoint, options);
+                const data = await response.json();
+
+                return data;
+            } catch (error) {
+                return {
+                    success: false,
+                    message: `Error: ${error.message}`,
+                    data: null
+                };
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function displayResult(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${isError ? 'error' : ''}`;
+
+            if (data.success) {
+                if (elementId === 'demo-result' && data.data) {
+                    element.innerHTML = formatDemoResults(data.data);
+                } else if (elementId === 'test-result' && data.data) {
+                    element.innerHTML = formatTestResults(data.data);
+                } else if (elementId === 'status-result' && data.data) {
+                    element.innerHTML = formatStatusResults(data.data);
+                } else {
+                    element.innerHTML = `<pre>${JSON.stringify(data.data, null, 2)}</pre>`;
+                }
+            } else {
+                element.innerHTML = `<pre>Error: ${data.message}</pre>`;
+            }
+        }
+
+        function formatDemoResults(data) {
+            return `
+                <h4>🔧 Rootkit Capabilities:</h4>
+                <ul class="feature-list">
+                    ${data.rootkit_capabilities.map(cap => `<li>${cap}</li>`).join('')}
+                </ul>
+
+                <h4>🌐 Stealth Communication:</h4>
+                <ul class="feature-list">
+                    ${data.stealth_communication.map(comm => `<li>${comm}</li>`).join('')}
+                </ul>
+
+                <h4>📦 Dropper Chain:</h4>
+                <ul class="feature-list">
+                    ${data.dropper_chain.map(stage => `<li>${stage}</li>`).join('')}
+                </ul>
+
+                <h4>🤖 AI Targeting:</h4>
+                <p>Found ${data.ai_targeting.found_files} files, prioritizing by ${data.ai_targeting.prioritization}</p>
+
+                <h4>🔐 Encryption:</h4>
+                <ul class="feature-list">
+                    ${data.encryption_simulation.map(enc => `<li>${enc}</li>`).join('')}
+                </ul>
+
+                <h4>🔄 Persistence:</h4>
+                <ul class="feature-list">
+                    ${data.persistence_mechanisms.map(pers => `<li>${pers}</li>`).join('')}
+                </ul>
+
+                <h4>🧹 Anti-Forensic:</h4>
+                <ul class="feature-list">
+                    ${data.anti_forensic.map(anti => `<li>${anti}</li>`).join('')}
+                </ul>
+
+                <h4>💣 Wiper Mode:</h4>
+                <ul class="feature-list">
+                    ${data.wiper_mode.map(wipe => `<li>${wipe}</li>`).join('')}
+                </ul>
+            `;
+        }
+
+        function formatTestResults(data) {
+            return data.map(test => `
+                <div>
+                    <strong>${test.component}:</strong>
+                    <span class="status ${test.status.toLowerCase()}">${test.status}</span>
+                    <br><small>${test.details}</small>
+                </div>
+            `).join('<hr>');
+        }
+
+        function formatStatusResults(data) {
+            return Object.entries(data).map(([key, value]) => `
+                <div><strong>${key}:</strong> ${value}</div>
+            `).join('');
+        }
+
+        async function runDemo() {
+            const result = await apiCall('/api/demo/run', 'POST');
+            displayResult('demo-result', result, !result.success);
+        }
+
+        async function getDemoResults() {
+            const result = await apiCall('/api/demo');
+            displayResult('demo-result', result, !result.success);
+        }
+
+        async function runIntegrationTest() {
+            const result = await apiCall('/api/test/run', 'POST');
+            displayResult('test-result', result, !result.success);
+        }
+
+        async function getTestResults() {
+            const result = await apiCall('/api/test');
+            displayResult('test-result', result, !result.success);
+        }
+
+        async function getSystemStatus() {
+            const result = await apiCall('/api/status');
+            displayResult('status-result', result, !result.success);
+        }
+
+        // Auto-load demo results on page load
+        window.onload = function() {
+            getDemoResults();
+            getSystemStatus();
+        };
+    </script>
+</body>
+</html>
