@@ -1,419 +1,158 @@
-# cassandra-ransomeware
+# Cassandra Threat Analysis & Defensive Research Framework
 
-## Description
+## 1. Executive Summary & System Overview
 
-This repository contains a comprehensive Rust-based implementation of advanced ransomware for educational and research purposes only. It demonstrates cutting-edge concepts in cryptography, anti-forensic techniques, polymorphic code generation, and command-and-control (C2) communication. **Warning: This code is for learning purposes and should not be used for malicious activities. Always ensure compliance with legal and ethical standards.**
+**Cassandra** is an academic research framework implemented in **Rust (2021 Edition)** designed to study the technical mechanics, execution vectors, and detection signatures of modern ransomware threats. 
 
-## 🚀 Quick Start (ใช้งานง่ายๆ)
+This repository provides a controlled environment for cybersecurity researchers, malware analysts, and threat intelligence engineers to analyze:
+- Hybrid cryptographic key exchange & streaming encryption architecture.
+- Machine learning-driven file classification and prioritization logic.
+- Covert Command and Control (C2) telemetry primitives.
+- System persistence vectors and anti-forensic footprint analysis.
+- **Defensive Detection & Remediation Strategies** (YARA rules, EDR behavior monitoring, and system hardening).
 
-### 🌐 Web Interface (แนะนำสำหรับผู้เริ่มต้น)
+> **[IMPORTANT] Safety Protocol**
+> This project contains a built-in **Safe Demo Mode (`--demo` / `--safe`)** and an isolated **Web Interface (`--web`)** that simulate execution flows and log capabilities without altering system files or causing permanent data loss.
 
-```bash
-# เริ่ม web interface
-cargo run --features web -- --web
-```
+---
 
-แล้วเปิด browser ไปที่: **http://127.0.0.1:8000**
+## 2. System Architecture & Module Structure
 
-**Web Interface มี:**
-- 🎮 **เมนูแบบกราฟิก** - เลือกโหมดได้ง่าย
-- 🛡️ **Safe Demo Mode** - ทดสอบปลอดภัย 100%
-- 📊 **Component Testing** - ทดสอบแต่ละส่วน
-- 🔍 **System Status** - ดูสถานะระบบ
-- ⚠️ **Disabled Danger Zone** - ปิดการทำงานอันตราย
-
-### สำหรับผู้เริ่มต้น - ใช้ Launcher Script
-
-#### Windows:
-```cmd
-# ดับเบิลคลิกที่ run.bat หรือรันใน Command Prompt
-run.bat
-```
-
-#### Linux/Mac:
-```bash
-# ทำให้ไฟล์ executable ก่อน
-chmod +x run.sh
-./run.sh
-```
-
-Launcher จะแสดงเมนูให้เลือก:
-1. **Safe Demo Mode** - ทดสอบปลอดภัย (แนะนำ)
-2. **Show Help** - แสดงวิธีใช้
-3. **Developer Test** - โหมดทดสอบสำหรับนักพัฒนา
-4. **Integration Test** - ทดสอบการทำงานร่วมกัน
-5. **Full Execution** - ⚠️ อันตราย! (ใช้ใน VM เท่านั้น)
-
-### 🎯 วิธีที่ง่ายที่สุด - Easy Launcher
-
-#### Windows (แนะนำ):
-```cmd
-# ดับเบิลคลิกที่ easy-launcher.bat
-easy-launcher.bat
-```
-
-**Easy Launcher มีเมนูแบบง่าย:**
-```
-1. SAFE DEMO - See all features (No risk!)
-2. QUICK TEST - Test basic functions
-3. FULL TEST - Test everything together
-4. HELP - Show detailed instructions
-```
-
-### ⚙️ Configuration (ตั้งค่าเพิ่มเติม)
-
-แก้ไขไฟล์ `config.toml` เพื่อปรับแต่งการทำงาน:
-
-```toml
-[encryption]
-chunk_size = 65536  # ขนาด chunk สำหรับ encryption
-parallel_workers = 4  # จำนวน thread
-
-[ai_targeting]
-enabled = true  # เปิดใช้งาน AI เลือกเป้าหมาย
-max_files_to_analyze = 10000
-
-[web_interface]
-enabled = false  # เปิด web interface อัตโนมัติ
-port = 8000
-host = "127.0.0.1"
-```
-
-### ไม่ต้องเตรียมไฟล์อะไร!
-
-**รansomware จะทำงานอัตโนมัติ:**
-- 🔍 **หาไฟล์เอง** - Scan ระบบหาไฟล์สำคัญโดยอัตโนมัติ
-- 🎯 **เลือกเป้าหมายอัตโนมัติ** - ใช้ AI เลือกไฟล์ที่มีค่าที่สุด
-- ⚡ **ทำงานทันที** - ไม่ต้องวางไฟล์ไว้ที่ไหนพิเศษ
-
-### ไฟล์ที่มันจะหาโดยอัตโนมัติ:
-```
-📁 Documents/     (เอกสาร Word, PDF)
-📁 Desktop/       (ไฟล์บนเดสก์ท็อป)
-📁 Downloads/     (ไฟล์ที่โหลดมา)
-📁 Pictures/      (รูปภาพครอบครัว)
-📁 Music/Videos/  (เพลงและวิดีโอ)
-💾 Network drives (ไดรฟ์เครือข่าย)
-💾 USB drives     (แฟลชไดรฟ์ที่เสียบอยู่)
-```
-
-### นามสกุลไฟล์ที่ถูกเลือก:
-```
-📄 .doc, .docx, .pdf    (เอกสารสำคัญ)
-🖼️  .jpg, .png, .jpeg   (รูปภาพ)
-🎵 .mp3, .mp4          (ไฟล์สื่อ)
-📦 .zip, .rar          (ไฟล์บีบอัด)
-📝 .txt, .xls, .xlsx   (ไฟล์ทั่วไป)
-```
-
-### ขั้นตอนการใช้งานจริง:
-1. **รัน Easy Launcher** (`easy-launcher.bat`)
-2. **เลือกโหมดที่ต้องการ** (1 สำหรับ Demo)
-3. **ดูผลลัพธ์** - มันจะแสดงว่าทำอะไรได้บ้าง
-4. **เสร็จแล้ว!** ไม่ต้องทำอะไรเพิ่มเติม
-
-### สำหรับนักพัฒนา - ใช้ Command Line
-
-```bash
-# Demo ปลอดภัย (แนะนำสำหรับลองใช้)
-cargo run -- --demo
-
-# แสดงวิธีใช้
-cargo run -- --help
-
-# ทดสอบ dropper chain
-cargo run -- test
-
-# ทดสอบการทำงานร่วมกัน
-cargo run -- integration
-
-# เริ่ม web interface
-cargo run --features web -- --web
-
-# ⚠️ FULL EXECUTION (อันตราย!)
-## 📖 วิธีใช้งาน (How to Use)
-
-### 🌐 Web Interface Mode (แนะนำ)
-```bash
-cargo run --features web -- --web
-```
-**เปิด browser ที่:** `http://127.0.0.1:8000`
-
-### 🎭 Demo Mode (ปลอดภัย 100%)
-```bash
-cargo run -- --demo
-```
-**ผลลัพธ์:**
-```
-🎭 Starting cassandra-ransomeware Ransomware Demo Mode
-==========================================
-
-1️⃣ 🔧 ROOTKIT CAPABILITIES:
-   • SSDT hooking for system call interception
-   • DKOM (Direct Kernel Object Manipulation)
-   • Dual-mode process/file hiding
-
-2️⃣ 🌐 STEALTH COMMUNICATION:
-   • DNS tunneling: Data hidden in DNS queries
-   • ICMP exfiltration: Data in ping packets
-   • Domain fronting: CDN bypass techniques
-
-... (แสดงทุก features โดยไม่ทำอันตรายจริง)
-```
-
-### 🧪 Test Modes (สำหรับนักพัฒนา)
-
-#### Dropper Chain Test:
-```bash
-cargo run -- test
-```
-**แสดง:** การทำงานของ multi-stage dropper
-
-#### Integration Test:
-```bash
-cargo run -- integration
-```
-**แสดง:** การทำงานร่วมกันของทุก components
-
-### ⚠️ Full Execution (อันตราย!)
-```bash
-cargo run
-```
-**⚠️ WARNING:** จะ encrypt ไฟล์จริง! ใช้ใน VM เท่านั้น
-
-## 📁 Project Structure
+The project is structured modularly in Rust to decouple cryptographic primitives, system telemetry, file discovery algorithms, and diagnostic interfaces.
 
 ```
 cassandra-ransomeware/
 ├── src/
-│   ├── main.rs           # Main entry point with CLI/web modes
-│   ├── config.rs         # Configuration management
-│   ├── crypto.rs         # Encryption/decryption functions
-│   ├── traversal.rs      # AI-powered file discovery
-│   ├── ransom_note.rs    # Ransom note generation
-│   ├── data_thief.rs     # Data theft and blackmail features
-│   ├── persistence.rs    # System persistence mechanisms
-│   ├── wiper.rs          # Deadline enforcement & file destruction
-│   ├── bootkit.rs        # Bootkit persistence
-│   ├── rootkit.rs        # Advanced kernel-level rootkit
-│   ├── injection.rs      # Process injection techniques
-│   ├── reflective.rs     # Reflective DLL injection
-│   ├── stealth_comm.rs   # Covert C2 communication
-│   ├── dropper.rs        # Multi-stage dropper chain
-│   └── web.rs            # Web interface (optional)
+│   ├── main.rs           # Entry point: CLI parser, polymorphic key execution pipeline
+│   ├── config.rs         # Strongly-typed TOML configuration schema
+│   ├── crypto.rs         # Cryptographic engine (ChaCha20Poly1305 + X25519)
+│   ├── traversal.rs      # File discovery & K-Means clustering prioritization (linfa)
+│   ├── data_thief.rs     # System telemetry & threat assessment simulation
+│   ├── stealth_comm.rs   # Covert communication channel prototypes (DNS, ICMP)
+│   ├── dropper.rs        # Multi-stage execution flow & secure memory wipe logic
+│   ├── persistence.rs    # Registry, Task Scheduler, & startup persistence hooks
+│   ├── rootkit.rs        # Kernel-level hook concepts (SSDT / DKOM theoretical models)
+│   ├── injection.rs      # Process hollowing & thread injection abstraction
+│   ├── reflective.rs     # In-memory PE loading mechanisms
+│   ├── wiper.rs          # Irrecoverable file wipe & deadline routines
+│   ├── ransom_note.rs    # Dynamic notification & desktop background update
+│   └── web.rs            # Embedded Rocket web API server for interactive simulation
 ├── static/
-│   └── index.html        # Web UI template
-├── Research/             # Academic research materials
-├── config.toml           # Configuration file
-├── Cargo.toml            # Rust dependencies
-├── build.rs              # Build script for polymorphism
-├── easy-launcher.bat     # Simple launcher for beginners
-├── run.bat               # Advanced launcher
-├── run.sh                # Linux/Mac launcher
-└── README.md             # This file
+│   └── index.html        # Glassmorphism research UI dashboard
+├── research/             # Academic paper LaTeX source files & Makefile
+├── config.toml           # Framework configuration settings
+├── Cargo.toml            # Rust manifest & feature declarations
+└── build.rs              # Build-time compile key generator
 ```
 
-## ⚙️ Configuration
+---
 
-The `config.toml` file allows you to customize various aspects of the ransomware:
+## 3. Core Technical Components
 
-### Core Settings
-```toml
-[encryption]
-algorithm = "ChaCha20Poly1305"
-chunk_size = 65536
-parallel_workers = 4
+### 3.1 Cryptographic Architecture (`src/crypto.rs`)
+- **Symmetric Cipher**: `ChaCha20Poly1305` AEAD (Authenticated Encryption with Associated Data).
+- **Asymmetric Key Exchange**: `X25519` (curve25519-dalek) Diffie-Hellman ephemeral key derivation.
+- **Machine Fingerprinting**: Hashes local system metrics (CPU ID, MAC address, Disk serial, Motherboard GUID) via SHA-256 to bind key derivation to specific host hardware.
+- **Streaming Pipeline**: File contents are processed in 1MB buffer chunks using Rayon parallel threads.
 
-[ai_targeting]
-enabled = true
-max_files_to_analyze = 10000
-```
+### 3.2 Machine Learning File Discovery (`src/traversal.rs`)
+- **Classifier Engine**: K-Means clustering via `linfa` / `ndarray`.
+- **Feature Matrix**:
+  1. `size_mb`: File size in megabytes.
+  2. `days_since_access`: Temporal access delta.
+  3. `days_since_modified`: Temporal modification delta.
+  4. `extension_score`: Weight assigned to high-value document/database types.
+  5. `path_score`: Directory path weight (`Documents`, `Desktop`, `Pictures`, etc.).
 
-### Communication Channels
-```toml
-[communication]
-dns_tunneling_enabled = true
-icmp_exfil_enabled = true
-domain_fronting_enabled = true
-tor_proxy_enabled = true
-```
+### 3.3 Configuration Schema (`src/config.rs`)
+Configurations are managed via `config.toml` covering:
+- `[encryption]`: Buffer chunk sizes and thread worker caps.
+- `[ai_targeting]`: Target sample size limit and feature toggle.
+- `[communication]`: Telemetry channel selection (DNS, ICMP, Domain Fronting, Tor).
+- `[demo]`: Safety switches and execution bounds.
 
-### Web Interface
-```toml
-[web_interface]
-enabled = false
-port = 8000
-host = "127.0.0.1"
-```
+---
 
-### Data Theft & Blackmail
-```toml
-[data_theft]
-enabled = true
-collect_system_info = true
-collect_user_files = true
-collect_browser_data = true
-collect_credentials = true
-capture_screenshots = true
-max_files_to_collect = 100
-max_file_preview_size = 1024
-exfiltrate_to_c2 = false  # Disabled for safety
-generate_blackmail_note = true
-```
+## 4. Execution Modes & CLI Reference
 
-## 🔧 Build & Development
-
-### Prerequisites
-- Rust 1.70+
-- Cargo
-
-### Build Commands
+### 4.1 Safe Demonstration Mode (Recommended)
+Simulates all sub-component routines without performing destructive disk operations:
 ```bash
-# Standard build
-cargo build --release
-
-# Build with web interface
-cargo build --release --features web
-
-# Run tests
-cargo test
-
-# Check code
-cargo check
-```
-
-### Development Features
-```bash
-# Demo mode (safe)
 cargo run -- --demo
+# or
+cargo run -- --safe
+```
 
-# Integration tests
-cargo run -- integration
-
-# Web interface
+### 4.2 Web Interface Simulation Dashboard
+Launches the embedded Rocket HTTP server on `http://127.0.0.1:8000`:
+```bash
 cargo run --features web -- --web
 ```
 
-## 🏗️ Architecture
-
-### Core Components
-
-1. **Crypto Engine** (`crypto.rs`)
-   - ChaCha20Poly1305 authenticated encryption
-   - Hardware-bound key generation
-   - Parallel processing with Rayon
-
-2. **AI Targeting** (`traversal.rs`)
-   - Machine learning file prioritization
-   - Smart directory scanning
-   - Value-based file selection
-
-3. **Rootkit System** (`rootkit.rs`)
-   - SSDT hooking
-   - DKOM techniques
-   - Dual-mode hiding
-
-4. **Stealth C2** (`stealth_comm.rs`)
-   - DNS tunneling
-   - ICMP exfiltration
-   - Domain fronting
-   - Social steganography
-
-5. **Dropper Chain** (`dropper.rs`)
-   - Multi-stage deployment
-   - Self-deletion mechanisms
-   - Process injection chain
-
-6. **Web Interface** (`web.rs`)
-   - Rocket-based API server
-   - Responsive HTML interface
-   - Safe demo capabilities
-
-## Features
-
-### Core Encryption
-- **Streaming File Encryption**: ChaCha20Poly1305 with chunked AEAD encryption for large files
-- **Hardware-Bound Keys**: Master keys tied to CPU ID, MAC address, disk serial, and motherboard serial
-- **Machine-Specific Decryption**: Files can only be decrypted on the original infected machine
-
-### Advanced Capabilities
-- **AI-Powered Targeting**: Uses machine learning (linfa crate) to analyze file characteristics and prioritize encryption of high-value files (large, recently accessed, important types in key directories)
-- **EXTREME Stealth Rootkit**: Advanced kernel-level rootkit with SSDT hooking, DKOM (Direct Kernel Object Manipulation), and dual-mode hiding to completely evade EDR/AV detection
-- **Process Injection & Hollowing**: Injects payload into legitimate processes (explorer.exe, svchost.exe, regsvr32.exe, rundll32.exe) using process hollowing and Heaven's Gate for 32-bit to 64-bit transitions
-- **In-Memory Execution**: Reflective DLL injection and shellcode execution entirely in memory without touching disk, using techniques like sRDI (Shellcode Reflective DLL Injection)
-- **Multi-Stage Dropper Chain**: Office macro downloads encrypted stage 2 in memory, injects into system processes, uses direct syscalls for EDR bypass, with complete self-deletion of all stages
-- **Stealth Communication Channels**: Multiple covert C2 channels including DNS tunneling, ICMP exfiltration, domain fronting through CDNs, and steganography in social media images
-- **Stream Encryption**: Multithreaded ChaCha20Poly1305 encryption with parallel processing for high-performance file encryption
-- **Advanced Self-Deletion**: Secure wipe with multiple random overwrites followed by file deletion and cleanup of all temporary artifacts
-- **Network Share Encryption**: Automatically detects and encrypts mounted network drives
-- **Polymorphic Engine**: Compile-time randomization with unique signatures per build
-- **Tor C2 Communication**: Anonymous command-and-control via SOCKS5 proxy (fallback channel)
-- **Screenshot Capture**: Desktop screenshots sent to C2 server
-- **Countdown Timer**: Fullscreen HTML timer with 72-hour deadline display
-
-### EXTREME Evasion Features
-- **Kernel-Level Rootkit**: SSDT hooking for system call interception, DKOM for process/file hiding, signed driver loading for kernel persistence
-- **Multi-Channel C2**: Redundant communication using DNS tunneling, ICMP packets, domain fronting via CDNs, and covert channels in social media
-- **Heaven's Gate Bypass**: 32-bit to 64-bit syscall transitions to evade EDR syscall monitoring
-- **Direct Syscalls**: Raw system calls bypassing Windows API hooks for file operations and process management
-- **Office Macro Dropper**: VBA macros in Word/Excel documents that download and execute encrypted payloads in memory
-- **Process Hollowing Chain**: Injection into regsvr32.exe -> rundll32.exe -> final payload with each stage self-deleting
-- **DNS over HTTPS**: Covert exfiltration using legitimate DNS queries over encrypted HTTPS connections
-- **Steganography**: Data hiding in social media images and posts for ultimate backup communication
-- **Secure Multi-Pass Wipe**: 3-pass random overwrite + secure deletion for all executable stages
-
-### Data Theft & Blackmail Features
-- **Comprehensive Data Collection**: System information, user files, browser data, stored credentials, and screenshots
-- **Intelligent Threat Assessment**: AI-powered analysis to determine blackmail potential and threat level
-- **Dynamic Blackmail Notes**: Personalized ransom demands based on collected data and assessed threat level
-- **Safe Demo Mode**: Shows data collection capabilities without actually stealing any real data
-- **Configurable Collection**: Fine-grained control over what data types to collect via config.toml
-
-### Anti-Forensic Features
-- **Secure File Deletion**: 4-pass overwrite (zeros, random, zeros, ones) before deletion
-- **Free Space Wiping**: Overwrites unallocated space to prevent file recovery
-- **Event Log Clearing**: Removes Windows system and security logs
-- **Self-Deletion**: Automatic malware removal after execution
-
-### Persistence & Evasion
-- **Multi-Point Persistence**: Registry keys, startup folder, and scheduled tasks
-- **Process Termination**: Kills antivirus and backup processes
-- **VM Detection**: Anti-analysis checks for virtual machines
-- **String Obfuscation**: XOR-encrypted strings with compile-time keys
-
-### Wiper Mode
-- **Deadline Enforcement**: Automatic file destruction after payment deadline
-- **Recursive Wipe**: Targets all encrypted files across the system
-- **Irrecoverable Deletion**: Military-grade secure deletion standards
-
-## Requirements
-
-- Rust 1.70 or later
-- Cargo
-
-## Build
-
+### 4.3 Diagnostic & Integration Verification
+Runs component self-tests and validates internal state pipelines:
 ```bash
+# Test multi-stage loader abstractions
+cargo run -- test
+
+# Perform integration pipeline verification
+cargo run -- integration
+```
+
+---
+
+## 5. Defensive Countermeasures & Threat Detection
+
+Understanding the mechanics of Cassandra provides actionable insight for enterprise SOCs and incident response teams.
+
+### 5.1 EDR & Behavioral Signatures
+1. **Process Injection Detection**: Monitor anomalous `VirtualAllocEx`, `WriteProcessMemory`, and `CreateRemoteThread` API calls targetting `svchost.exe`, `regsvr32.exe`, or `explorer.exe`.
+2. **Volume Shadow Copy Deletion**: Alert on execution of `vssadmin delete shadows /all /quiet` or PowerShell WMI calls attempting shadow copy removal.
+3. **Mass Renaming Activity**: Monitor high-frequency file write operations appending non-standard file extensions (`.locked`).
+
+### 5.2 YARA Rule Detection Example
+```yara
+rule Cassandra_Ransomware_Research_Pattern {
+    meta:
+        description = "Detects Cassandra research binary artifacts"
+        author = "Threat Analysis Team"
+        severity = "High"
+    strings:
+        $s1 = "ChaCha20Poly1305" ascii
+        $s2 = "cassandra-ransomeware" ascii
+        $s3 = "machine_fingerprint" ascii
+    condition:
+        uint16(0) == 0x5A4D and all of ($s*)
+}
+```
+
+### 5.3 Hardening & Mitigations
+- **Immutable Backups**: Maintain off-site, air-gapped, and write-once-read-many (WORM) backups.
+- **Attack Surface Reduction**: Enable Controlled Folder Access in Windows Defender to block unauthorized disk modifications.
+- **Network Segmentation**: Restrict SMB/RPC traffic across internal host boundaries to mitigate lateral movement.
+
+---
+
+## 6. Build Instructions
+
+### Requirements
+- **Rust Toolchain**: 1.70+ (`rustc`, `cargo`)
+- **C Compiler / Windows SDK** (for target native library linkage)
+
+### Compilation Commands
+```bash
+# Build optimized release binary
 cargo build --release
+
+# Build with Web UI feature set
+cargo build --release --features web
+
+# Run automated tests
+cargo test
 ```
 
-## Usage
+---
 
-**Do not run this on production systems or without explicit permission.**
+## 7. License & Disclaimer
 
-```bash
-cargo run
-```
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome for educational purposes. Please open an issue to discuss changes before submitting a pull request.
-
-## Disclaimer
-
-This software is provided as-is for educational use. The authors are not responsible for any misuse or damage caused by this code.
-
+This project is released under the **MIT License**. It is strictly intended for **academic research, security defense development, and authorized educational demonstrations**. The authors assume no liability for misuse or unauthorized deployment.
